@@ -21,6 +21,7 @@ cd Esh-development
 pip install -r requirements.txt
 python esh.py
 ```
+What if we installed ESH using ESH? 🤯
 ## Usage
 As more commands are added to ESH, they will be added here.
 
