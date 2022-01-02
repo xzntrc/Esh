@@ -51,10 +51,8 @@ def exCmd(command):
 ## 'cmd_*' means that this function is a command.
 def cmd_cl(path):
     try:
-        if path.startwith("~"):
-            print("test")
+        if path.startswith("~"):
             hpath = path.replace("~", f"/home/{getpass.getuser()}")
-            print(hpath)
             os.chdir(os.path.abspath(hpath))
         else:    
             os.chdir(os.path.abspath(path))
@@ -80,13 +78,20 @@ def highlighting(data):
     elif os.path.isdir(data):
         file = f"{colours.yellow}{data}{colours.end}"
     else:
+        print("fail")
         file = f"{data}"
     return file
 
 # Listing all directories and files within the current directory
-def cmd_ls():
+def cmd_ls(p):
     try:
-        files = os.listdir(os.getcwd())
+        if p == "":
+            path = os.getcwd()
+            print(path)
+        else:
+            path = os.path.abspath(p)
+            print(path)
+        files = os.listdir(path)
         # Iterating over the array and performing the code below - given that the current element is not the last
         if len(files) >= 2: #Fix1
             for f in sorted(files)[:-1]:
@@ -108,8 +113,8 @@ def main():
             cmd_cl()
         elif inp == "help":
             cmd_cl()
-        elif inp == "pf":
-            cmd_ls()
+        elif inp[:2] == "pf":
+            cmd_ls(inp[3:])
         else:
             exCmd(inp)
 
@@ -121,6 +126,6 @@ if __name__ == '__main__':
         print(f"{colours.red}EccentriciShell recieved KeyboardInterrupt.{colours.end}")
         time.sleep(.7)
         print("Exiting")
-        time.sleep(1.2)
+        time.sleep(.7)
         sys.exit(0)
 
