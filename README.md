@@ -12,14 +12,14 @@ ESH consists of two branches; main and development - it is prefered that you use
 git clone https://github.com/Eccentrici/Esh.git
 cd Esh
 pip install -r requirements.txt
-python esh.py
+sh install.sh
 ```
 #### Development
 ```
 git clone --branch development https://github.com/Eccentrici/Esh.git
 cd Esh-development
 pip install -r requirements.txt
-python esh.py
+sh install.sh
 ```
 What if we installed ESH using ESH? 🤯
 ## Usage
