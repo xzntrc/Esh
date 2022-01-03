@@ -21,7 +21,8 @@ cd Esh-development
 pip install -r requirements.txt
 sh install.sh
 ```
-What if we installed ESH using ESH? 🤯
+Next, close your terminal, and re-open it. You now should be able to run `esh`.<br>
+<i>What if we installed ESH using ESH? 🤯</i>
 ## Usage
 As more commands are added to ESH, they will be added here.
 
