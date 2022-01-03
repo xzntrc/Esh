@@ -1,4 +1,5 @@
- <img src="https://media.discordapp.net/attachments/806836894846812160/927413649323204638/Banner.png?width=715&height=227">
+#  <img src="https://media.discordapp.net/attachments/806836894846812160/927413649323204638/Banner.png?width=715&height=227">
+
 
 ## About
 Eccentrici Shell (<i>abbrev.</i> ESH) is a small, universal shell, named after its creator - Eccentirici (Latin to mean Eccentrtic). ESH is currently developed in Python, offering simple editing, or an even simplier config.toml file for editing predifined settings. Did I mention that ESH is Free and Open Source? Well, it is!
