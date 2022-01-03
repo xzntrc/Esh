@@ -3,6 +3,7 @@ import subprocess
 import sys
 import time
 import getpass
+import toml
 # Defining some ANSI escape codes
 class colours:
     black = '\033[30m'
@@ -11,11 +12,16 @@ class colours:
     fileC = '\033[93m'
     end = '\033[0m'
 
+#   CONFIGURATION
+currentPath = os.path.dirname(sys.argv[0])
+config = toml.load(f'{currentPath}config.toml')
+
+
 # Called when a comamnd is not found
 def n(c):
     print(f"EccentriciShell: could not find the specified command: {c}")
 
-# Piping
+# Running external commands, forgot who wrote this segment.
 def exCmd(command):
     try:
         if "|" in command:
@@ -49,12 +55,15 @@ def exCmd(command):
 
 # Change Location.
 ## 'cmd_*' means that this function is a command.
-def cmd_cl(path):
+def cmd_kd(path):
     try:
-        if path.startswith("~"):
-            hpath = path.replace("~", f"/home/{getpass.getuser()}")
-            os.chdir(os.path.abspath(hpath))
-        else:    
+        if config['system']['usetilde'] == True:
+            if path.startswith("~"):
+                hpath = path.replace("~", f"/home/{getpass.getuser()}")
+                os.chdir(os.path.abspath(hpath))
+            else:    
+                os.chdir(os.path.abspath(path))
+        else:
             os.chdir(os.path.abspath(path))
     except Exception:
         print(f"EccentriciShell: could not find '{path}' as a valid directory.")
@@ -65,32 +74,32 @@ def dir(cwd):
     path = os.path.abspath(cwd)
     if os.path.dirname(path) == path:
         return "/"
-    elif path.startswith(f"/home/{getpass.getuser()}"):
-        return path.replace(f"/home/{getpass.getuser()}","~")
+    elif config['system']['usetilde'] == True:
+        if path.startswith(f"/home/{getpass.getuser()}"):
+            return path.replace(f"/home/{getpass.getuser()}","~")
     else:
         return os.path.abspath(cwd)
 
 # Highlighting
 ## Used for highlighting data.
 def highlighting(data):
-    if os.path.isfile(data) == True:
-        file = f"{colours.red}{data}{colours.end}"
-    elif os.path.isdir(data):
-        file = f"{colours.yellow}{data}{colours.end}"
-    else:
-        print("fail")
-        file = f"{data}"
-    return file
+    if config['colours']['enabled'] == True:
+        if os.path.isfile(data) == True:
+            file = f"{colours.red}{data}{colours.end}"
+        elif os.path.isdir(data):
+            file = f"{colours.yellow}{data}{colours.end}"
+        else:
+            file = f"{data}"
+        return file
+    return data
 
 # Listing all directories and files within the current directory
 def cmd_ls(p):
     try:
         if p == "":
             path = os.getcwd()
-            print(path)
         else:
             path = os.path.abspath(p)
-            print(path)
         files = os.listdir(path)
         # Iterating over the array and performing the code below - given that the current element is not the last
         if len(files) >= 2: #Fix1
@@ -107,12 +116,15 @@ def main():
         inp = input(f"{dir(os.getcwd())} → ")
         if inp == "exit":
             break
+        elif inp == "quit":
+            break
         elif inp[:2] == "kd": #basically CD 
-            cmd_cl(inp[3:])
+            cmd_kd(inp[3:])
         elif inp[:1] == "":
             cmd_cl()
         elif inp == "help":
-            cmd_cl()
+            #Later
+            return "coming soon"
         elif inp[:2] == "pf":
             cmd_ls(inp[3:])
         else:
