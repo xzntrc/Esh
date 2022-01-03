@@ -22,7 +22,7 @@ config = toml.load(f'/home/{getpass.getuser()}/bin/eshconfig.toml')
 def n(c):
     print(f"EccentriciShell: could not find the specified command: {c}")
 
-# Running external commands, forgot who wrote this segment.
+# Piping
 def exCmd(command):
     try:
         if "|" in command:
