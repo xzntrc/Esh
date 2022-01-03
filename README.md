@@ -21,6 +21,7 @@ cd Esh-development
 pip install -r requirements.txt
 python esh.py
 ```
+What if we installed ESH using ESH? 🤯
 ## Usage
 As more commands are added to ESH, they will be added here.
 
@@ -64,3 +65,5 @@ usetilde = false
 	* `usetilde` is used to enable the usage of tildes ( ~ ). If enabled, tides will reflect the home directory, for example `kd ~` will change into the home directory.
 ## Notes
 ESH is nothing special, it is merely a project that I have started to pass time this (Dec. 2021) Christmas break. I hope that I'll continue developing this as a sort of "achievement" for myself.
+
+I like writing READMEs :))))))
