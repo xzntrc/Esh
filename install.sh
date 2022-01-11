@@ -4,6 +4,8 @@ mkdir -p $HOME/.config/esh
 echo "sudo required to move ESH to '/bin/esh':"
 sudo cp esh /bin/esh
 mv config.toml $HOME/.config/esh/eshconfig.toml
+echo "if you recieve an error, ensure you have 'python-pip' installed:"
+pip install -r requirements.txt
 echo "Done."
 echo "You can now delete this repository."
 echo "Run 'esh' in a terminal to start!"
