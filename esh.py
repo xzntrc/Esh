@@ -15,7 +15,7 @@ class colours:
 
 #   CONFIGURATION
 currentPath = os.path.dirname(sys.argv[0])
-config = toml.load(f'/home/{getpass.getuser()}/bin/eshconfig.toml')
+config = toml.load(f'/home/{getpass.getuser()}/.config/esh/eshconfig.toml')
 
 
 # Called when a comamnd is not found
