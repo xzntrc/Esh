@@ -1,4 +1,15 @@
 #!/usr/bin/env python
+
+# WARNING
+# WARNING
+# WARNING
+# --------
+# IN THE CASE THAT ESH IS SET TO YOUR USER SHELL AND YOU HAVE MADE A MISTAKE IN THIS FILE DO THE FOLLOWING:
+# 1. Log into TTY2 as your root user.
+# 2. Fix the issue using a terminal editor. Otherwise, use the install script.
+# Reboot.
+
+
 import os
 import subprocess
 import sys
@@ -6,17 +17,15 @@ import time
 import getpass
 import toml
 import socket
-# Defining some ANSI escape codes
-class colours:
-    black = '\033[30m'
-    red = '\033[91m'
-    yellow = '\033[93m'
-    fileC = '\033[93m'
-    end = '\033[0m'
-def _16(color_, string):
-    return("\033[2;{num}m{string}\033[0;0m".format(num=str(color_)))
+from stat import *
 
+try:
+    import readline
+    readline.read_history_file(f"/home/{getpass.getuser()}/.config/esh/.eshhistory")
+except:
+    pass
 
+# Functions for returning ANSI colours manually.
 def _256(color_, string):
     num1 = str(color_)
     if color_ % 16 == 0:
@@ -25,8 +34,7 @@ def _256(color_, string):
         return(f"\033[38;5;{num1}m{string}\033[0;0m")
 
 
-#   CONFIGURATION
-currentPath = os.path.dirname(sys.argv[0])
+# Configuration
 config = toml.load(f'/home/{getpass.getuser()}/.config/esh/eshconfig.toml')
 
 
@@ -52,7 +60,7 @@ def exCmd(command):
                 os.dup2(fdout, 1)
                 os.close(fdout)
                 try:
-                    subprocess.run(i.strip().split())
+                    p = subprocess.run(i.strip().split())
                 except Exception:
                     n(i.strip())
 
@@ -60,13 +68,14 @@ def exCmd(command):
             os.dup2(s_out, 1)
             os.close(s_in)
             os.close(s_out)
+
         else:
-            subprocess.run(command.split(" "))
+            p = subprocess.run(command.split(" "))
 
     except Exception:
         n(command)
 
-# Change Location.
+# Change Directory
 ## 'cmd_*' means that this function is a command.
 def cmd_kd(path):
     try:
@@ -97,10 +106,10 @@ def dir(cwd):
 ## Used for highlighting data.
 def highlighting(data):
     if config['colours']['enabled'] == True:
-        if os.path.isfile(data) == True:
-            file = f"{colours.red}{data}{colours.end}"
+        if os.path.isfile(data)== True:
+            file = f"{_256(9, data)}"
         elif os.path.isdir(data):
-            file = f"{colours.yellow}{data}{colours.end}"
+            file = f"{_256(11, data)}"
         else:
             file = f"{data}"
         return file
@@ -124,34 +133,47 @@ def cmd_ls(p):
             print(highlighting("".join(sorted(files))))
     except Exception:
         print(f"{colours.red}EccentriciShell: something went wrong while executing this comamnd.{colours.end}")
+
+# Creating a counter.
+## This counter will be useful for single based events.
+
+counter = 0
 def main():
     while True:
-        print(f"{_256(15, getpass.getuser())}{_256(69, '@')}{_256(15, socket.gethostname())}")
-        inp = input(f"{_256(197, '$ ')}")
-        if inp == "exit":
-            break
-        elif inp == "quit":
-            break
-        elif inp[:2] == "kd": #basically CD 
-            cmd_kd(inp[3:])
-        elif inp[:1] == "":
-            cmd_cl()
-        elif inp == "help":
-            #Later
-            return "coming soon"
-        elif inp[:2] == "pf":
-            cmd_ls(inp[3:])
-        else:
-            exCmd(inp)
+        try:
+            global counter
+            # If counter is 0 - in other words, if this is the first command in the terminal session - then run a startup command.
+            if counter == 0:
+                exCmd(f"sh /home/{getpass.getuser()}/.config/esh/start.sh")
+            # Prompt
+            print(f"{_256(15, getpass.getuser())}{_256(117, '@')}{_256(15, socket.gethostname())} [{_256(15, dir(os.getcwd()))}]")
+            inp = input(f"{_256(197, '🦓 $ ')}")
 
+            # Outcomes.
+            if inp == "exit":
+                break
+            elif inp == "quit":
+                break
+            elif inp[:2] == "cd":
+                cmd_kd(inp[3:])
+            elif inp[:1] == "":
+                return
+            elif inp[:2] == "ls":
+                cmd_ls(inp[3:])
+            elif inp[:4] == "exec":
+                exCmd(inp[5:])
+            else:
+                exCmd(inp)
+            counter += 1
+            readline.write_history_file(f"/home/{getpass.getuser()}/.config/esh/.eshhistory")
+            readline.parse_and_bind("tab: complete")
+        except KeyboardInterrupt:
+            counter +=1
+            print()
+            main() # STOPS ALL KEYBOARD INTERRUPTIONS.
+        
 if __name__ == '__main__':
     try:
         main()
-    except KeyboardInterrupt:
-        print()
-        print(f"{colours.red}EccentriciShell recieved KeyboardInterrupt.{colours.end}")
-        time.sleep(.7)
-        print("Exiting")
-        time.sleep(.7)
-        sys.exit(0)
-
+    except:
+        print("Something went wrong!")
