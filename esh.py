@@ -5,6 +5,7 @@ import sys
 import time
 import getpass
 import toml
+import socket
 # Defining some ANSI escape codes
 class colours:
     black = '\033[30m'
@@ -12,6 +13,17 @@ class colours:
     yellow = '\033[93m'
     fileC = '\033[93m'
     end = '\033[0m'
+def _16(color_, string):
+    return("\033[2;{num}m{string}\033[0;0m".format(num=str(color_)))
+
+
+def _256(color_, string):
+    num1 = str(color_)
+    if color_ % 16 == 0:
+        return(f"\033[38;5;{num1}m{string}\033[0;0m\n")
+    else:
+        return(f"\033[38;5;{num1}m{string}\033[0;0m")
+
 
 #   CONFIGURATION
 currentPath = os.path.dirname(sys.argv[0])
@@ -62,7 +74,7 @@ def cmd_kd(path):
             if path.startswith("~"):
                 hpath = path.replace("~", f"/home/{getpass.getuser()}")
                 os.chdir(os.path.abspath(hpath))
-            else:    
+            else:
                 os.chdir(os.path.abspath(path))
         else:
             os.chdir(os.path.abspath(path))
@@ -114,7 +126,8 @@ def cmd_ls(p):
         print(f"{colours.red}EccentriciShell: something went wrong while executing this comamnd.{colours.end}")
 def main():
     while True:
-        inp = input(f"{dir(os.getcwd())} → ")
+        print(f"{_256(15, getpass.getuser())}{_256(69, '@')}{_256(15, socket.gethostname())}")
+        inp = input(f"{_256(197, '$ ')}")
         if inp == "exit":
             break
         elif inp == "quit":
